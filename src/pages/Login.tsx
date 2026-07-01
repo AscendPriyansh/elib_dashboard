@@ -9,11 +9,43 @@ import {
     FieldSeparator,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
+import { useRef } from "react"
+import { Link, useNavigate } from "react-router"
+import { useMutation } from "@tanstack/react-query"
+import { login } from "@/http/api"
 
 function Login({
     className,
     ...props
 }: React.ComponentProps<"div">) {
+    const navigate = useNavigate();
+    const emailRef = useRef<HTMLInputElement>(null);
+    const passwordRef = useRef<HTMLInputElement>(null);
+
+    const mutation = useMutation({
+    mutationFn: login,
+    onSuccess: () => {
+      console.log("Login successful");
+      navigate("/dashboard/home");
+    },
+  })
+
+    const handleLoginSubmit = (e: { preventDefault: () => void }) => {
+        e.preventDefault();
+
+        const email = emailRef.current?.value;
+        const password = passwordRef.current?.value;
+
+        // backend call
+        console.log({email, password});
+
+        if(!email || !password) {
+            return alert("Please enter email and password");
+        }
+
+        mutation.mutate({email, password});
+    }
+
     return (
         <div className="flex min-h-svh flex-col items-center justify-center bg-muted p-6 md:p-10">
             <div className="w-full max-w-sm md:max-w-4xl">
@@ -25,12 +57,13 @@ function Login({
                                     <div className="flex flex-col items-center gap-2 text-center">
                                         <h1 className="text-2xl font-bold">Welcome back</h1>
                                         <p className="text-balance text-muted-foreground">
-                                            Login to your Acme Inc account
+                                            Login to your elib account
                                         </p>
                                     </div>
                                     <Field>
                                         <FieldLabel htmlFor="email">Email</FieldLabel>
                                         <Input
+                                            ref={emailRef}
                                             id="email"
                                             type="email"
                                             placeholder="m@example.com"
@@ -47,10 +80,10 @@ function Login({
                                                 Forgot your password?
                                             </a>
                                         </div>
-                                        <Input id="password" type="password" required />
+                                        <Input ref={passwordRef} id="password" type="password" required />
                                     </Field>
                                     <Field>
-                                        <Button type="submit">Login</Button>
+                                        <Button type="submit" onClick={handleLoginSubmit}>Login</Button>
                                     </Field>
                                     <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card">
                                         Or continue with
@@ -85,7 +118,7 @@ function Login({
                                         </Button>
                                     </Field>
                                     <FieldDescription className="text-center">
-                                        Don&apos;t have an account? <a href="#">Sign up</a>
+                                        Don&apos;t have an account? <Link to="/auth/register">Sign up</Link>
                                     </FieldDescription>
                                 </FieldGroup>
                             </form>

@@ -9,6 +9,7 @@ import {
     FieldSeparator,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
+import { Link } from "react-router"
 
 function Register({
     className,
@@ -94,7 +95,7 @@ function Register({
                                         </Button>
                                     </Field>
                                     <FieldDescription className="text-center">
-                                        Already have an account? <a href="#">Sign in</a>
+                                        Already have an account? <Link to="/auth/login">Sign in</Link>
                                     </FieldDescription>
                                 </FieldGroup>
                             </form>
