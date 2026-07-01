@@ -62,7 +62,7 @@ function Login({
                                         </p>
                                     </div>
                                     <Field>
-                                        {/* {mutation.isPending } */}
+                                        {mutation.isError && <div className="text-red-700 text-xs">{"Something went wrong"}</div>}
                                         <FieldLabel htmlFor="email">Email</FieldLabel>
                                         <Input
                                             ref={emailRef}
