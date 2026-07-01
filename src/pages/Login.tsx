@@ -13,6 +13,7 @@ import { useRef } from "react"
 import { Link, useNavigate } from "react-router"
 import { useMutation } from "@tanstack/react-query"
 import { login } from "@/http/api"
+import { LoaderCircle } from "lucide-react"
 
 function Login({
     className,
@@ -61,6 +62,7 @@ function Login({
                                         </p>
                                     </div>
                                     <Field>
+                                        {/* {mutation.isPending } */}
                                         <FieldLabel htmlFor="email">Email</FieldLabel>
                                         <Input
                                             ref={emailRef}
@@ -83,7 +85,10 @@ function Login({
                                         <Input ref={passwordRef} id="password" type="password" required />
                                     </Field>
                                     <Field>
-                                        <Button type="submit" onClick={handleLoginSubmit}>Login</Button>
+                                        <Button type="submit" onClick={handleLoginSubmit} disabled={mutation.isPending}>
+                                            {mutation.isPending && <LoaderCircle className="animate-spin"/>}
+                                            Login
+                                        </Button>
                                     </Field>
                                     <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card">
                                         Or continue with
