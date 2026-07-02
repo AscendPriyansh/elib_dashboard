@@ -9,12 +9,44 @@ import {
     FieldSeparator,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { Link } from "react-router"
+import { Link, useNavigate } from "react-router"
+import { useMutation } from "@tanstack/react-query"
+import { useRef } from "react"
+import { register } from "@/http/api"
+import { LoaderCircle } from "lucide-react"
 
 function Register({
     className,
     ...props
 }: React.ComponentProps<"div">) {
+    const navigate = useNavigate();
+    const emailRef = useRef<HTMLInputElement>(null);
+    const passwordRef = useRef<HTMLInputElement>(null);
+
+    const mutation = useMutation({
+    mutationFn: register,
+    onSuccess: () => {
+      console.log("Signup successful");
+      navigate("/api/users/login");
+    },
+  })
+
+    const handleRegisterSubmit = (e: { preventDefault: () => void }) => {
+        e.preventDefault();
+
+        const email = emailRef.current?.value;
+        const password = passwordRef.current?.value;
+
+        // backend call
+        console.log({email, password});
+
+        if(!email || !password) {
+            return alert("Please enter email and password");
+        }
+
+        mutation.mutate({email, password});
+    }
+
     return (
         <div className="flex min-h-svh flex-col items-center justify-center bg-muted p-6 md:p-10">
             <div className="w-full max-w-sm md:max-w-4xl">
@@ -30,8 +62,10 @@ function Register({
                                         </p>
                                     </div>
                                     <Field>
+                                        {mutation.isError && <div className="text-red-700 text-xs">{"Something went wrong"}</div>}
                                         <FieldLabel htmlFor="email">Email</FieldLabel>
                                         <Input
+                                            ref={emailRef}
                                             id="email"
                                             type="email"
                                             placeholder="m@example.com"
@@ -43,16 +77,10 @@ function Register({
                                         </FieldDescription>
                                     </Field>
                                     <Field>
-                                        <Field className="grid grid-cols-2 gap-4">
+                                        <Field className="gap-4">
                                             <Field>
                                                 <FieldLabel htmlFor="password">Password</FieldLabel>
-                                                <Input id="password" type="password" required />
-                                            </Field>
-                                            <Field>
-                                                <FieldLabel htmlFor="confirm-password">
-                                                    Confirm Password
-                                                </FieldLabel>
-                                                <Input id="confirm-password" type="password" required />
+                                                <Input ref={passwordRef} id="password" type="password" required/>
                                             </Field>
                                         </Field>
                                         <FieldDescription>
@@ -60,7 +88,10 @@ function Register({
                                         </FieldDescription>
                                     </Field>
                                     <Field>
-                                        <Button type="submit">Create Account</Button>
+                                        <Button type="submit" onClick={handleRegisterSubmit} disabled={mutation.isPending}>
+                                            {mutation.isPending && <LoaderCircle className="animate-spin"/>}
+                                            Create Account
+                                        </Button>
                                     </Field>
                                     <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card">
                                         Or continue with
