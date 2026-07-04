@@ -3,6 +3,7 @@ import globalErrorHandler from "./middleware/globalErrorHandler.ts";
 import userRouter from "./user/userRouter.ts";
 import bookRouter from "./book/bookRouter.ts";
 
+
 const app = express();
 app.use(express.json());
 
@@ -15,7 +16,7 @@ app.get("/", (req, res, next) => {
 app.use("/auth", userRouter);
 
 // BOOK / CRUD
-app.use("/auth/book", bookRouter); 
+app.use("/api/book", bookRouter); 
 
 
 // Global error handler
