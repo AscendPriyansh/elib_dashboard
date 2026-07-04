@@ -6,19 +6,17 @@ import jwt from "jsonwebtoken";
 import createHttpError from "http-errors";
 
 const Register = async (req: Request, res: Response, next: NextFunction) => {
-    const { name, email, password } = req.body;
-
-    if (!name || !email || !password) {
-        const error = createHttpError(400, "All fields are required");
-        return next(error);
-    }
     try {
+        const { name, email, password } = req.body;
+
+        if (!name || !email || !password) {
+            return next(createHttpError(400, "Invalid Credentials."));
+        };
 
         const userExist = await UserModel.findOne({ email: email });
 
         if (userExist) {
-            const error = createHttpError(400, "User already exists with this email.");
-            return next(error);
+            return next(createHttpError(409, "User with this email already exist."));
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -35,35 +33,29 @@ const Register = async (req: Request, res: Response, next: NextFunction) => {
             message: "User created successfully.",
             user: userWithoutPassword
         });
-
     } catch (err) {
-        return next(createHttpError(500, "Internal Server Error."));
+        return next(createHttpError(500, "Internal server error."));
     }
 }
 
 const Login = async (req: Request, res: Response, next: NextFunction) => {
+    try {
         const { email, password } = req.body;
 
         if (!email || !password) {
-            const error = createHttpError(400, "All fields are required");
-            return next(error);
+            return next(createHttpError(400, "Invalid Credentials."));
         }
 
-    try {
         const userExist = await UserModel.findOne({ email: email });
 
         if (!userExist) {
-            return res.status(404).json({
-                message: "User doesn't exist."
-            });
+            return next(createHttpError(400, "User doesn't exist."));
         }
 
         const isPasswordValid = await bcrypt.compare(password, userExist.password);
 
         if (!isPasswordValid) {
-            return res.status(401).json({
-                message: "Invalid credentials."
-            });
+            return next(createHttpError(401, "Invalid Credentials."));
         }
 
         const token = jwt.sign({ id: userExist._id.toString() }, config.jwt_secret as string, { expiresIn: "7d" });
@@ -74,7 +66,7 @@ const Login = async (req: Request, res: Response, next: NextFunction) => {
         });
 
     } catch (err) {
-        return next(createHttpError(400, "Internal Server Error."));
+        return next(createHttpError(500, "Internal server error."));
     }
 }
 
