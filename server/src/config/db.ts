@@ -11,11 +11,10 @@ const connectDB = async () => {
             console.log("Error in connecting database.", e);
         });
 
-
         await mongoose.connect(config.db_uri as string)
 
     } catch(e) {
-        console.error("Failed to connect to databaese.", e);
+        console.error("Failed to connect to database.", e);
         process.exit(1);
     }
 }

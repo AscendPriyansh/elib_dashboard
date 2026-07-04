@@ -1,9 +1,10 @@
 import express from "express";
-import { createUser } from "./userController.ts";
+import { Register, Login } from "./userController.ts";
 
 const userRouter = express.Router();
 
-userRouter.post("/register", createUser);
+userRouter.post("/register", Register);
+userRouter.post("/login", Login);
 
 // userRouter.post("/login", );
 
