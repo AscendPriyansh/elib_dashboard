@@ -11,7 +11,7 @@ const Register = async (req: Request, res: Response, next: NextFunction) => {
 
         if (!name || !email || !password) {
             return next(createHttpError(400, "Invalid Credentials."));
-        };
+        }
 
         const userExist = await UserModel.findOne({ email: email });
 
