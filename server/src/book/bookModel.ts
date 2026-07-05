@@ -1,6 +1,6 @@
+import mongoose from "mongoose";
 import { Schema, model} from "mongoose";
 import type { Book } from "./bookTypes.ts";
-import { string } from "zod";
 
 const bookSchema = new Schema<Book>({
     title: {
@@ -12,7 +12,8 @@ const bookSchema = new Schema<Book>({
         required: true
     },
     author: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
         required: true
     },
     genre: {
@@ -25,7 +26,7 @@ const bookSchema = new Schema<Book>({
     },
     file: {
         type: String,
-        requied: true,
+        required: true,
     }
 }, {timestamps: true});
 
