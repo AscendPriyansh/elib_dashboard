@@ -29,7 +29,7 @@ function Login({
     const mutation = useMutation({
     mutationFn: login,
     onSuccess: (response) => {
-      setToken(response.data.accessToken);
+      setToken(response.data.token);
       navigate("/dashboard/home");
     },
   })
@@ -65,7 +65,7 @@ function Login({
                                         </p>
                                     </div>
                                     <Field>
-                                        {mutation.isError && <div className="text-red-700 text-xs">{"Something went wrong"}</div>}
+                                         {mutation.isError && <div className="text-red-700 text-xs">{"Something went wrong"}</div>}
                                         <FieldLabel htmlFor="email">Email</FieldLabel>
                                         <Input
                                             ref={emailRef}

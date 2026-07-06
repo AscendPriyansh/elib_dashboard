@@ -14,40 +14,47 @@ import { useMutation } from "@tanstack/react-query"
 import { useRef } from "react"
 import { register } from "@/http/api"
 import { LoaderCircle } from "lucide-react"
-import useTokenStore from "@/store"
 
 function Register({
     className,
     ...props
 }: React.ComponentProps<"div">) {
-    const setToken = useTokenStore((state) => state.setToken);
     const navigate = useNavigate();
+
+    const nameRef = useRef<HTMLInputElement>(null);
     const emailRef = useRef<HTMLInputElement>(null);
     const passwordRef = useRef<HTMLInputElement>(null);
 
     const mutation = useMutation({
     mutationFn: register,
-    onSuccess: (response) => {
+    onSuccess: () => {
       console.log("Signup successful");
-      setToken(response.data.accessToken);
-      navigate("/api/users/login");
+      navigate("/auth/login");
     },
   })
+
+        const getErrorMessage = (err: unknown) => {
+                if (!err) return "Something went wrong";
+                if (typeof err === "string") return err;
+                const anyErr = err as { response?: { data?: { message?: string } }; message?: string };
+                return anyErr.response?.data?.message || anyErr.message || "Something went wrong";
+        }
 
     const handleRegisterSubmit = (e: { preventDefault: () => void }) => {
         e.preventDefault();
 
+        const name = nameRef.current?.value;
         const email = emailRef.current?.value;
         const password = passwordRef.current?.value;
 
         // backend call
-        console.log({email, password});
+        console.log({name, email, password});
 
-        if(!email || !password) {
+        if(!name || !email || !password) {
             return alert("Please enter email and password");
         }
 
-        mutation.mutate({email, password});
+        mutation.mutate({name, email, password});
     }
 
     return (
@@ -65,7 +72,17 @@ function Register({
                                         </p>
                                     </div>
                                     <Field>
-                                        {mutation.isError && <div className="text-red-700 text-xs">{"Something went wrong"}</div>}
+                                        {mutation.isError && <div className="text-red-700 text-xs">{getErrorMessage(mutation.error)}</div>}
+                                        <FieldLabel htmlFor="email">Name</FieldLabel>
+                                        <Input
+                                            ref={nameRef}
+                                            id="name"
+                                            type="text"
+                                            placeholder="Babu Rao"
+                                            required
+                                        />
+                                    </Field>
+                                    <Field>
                                         <FieldLabel htmlFor="email">Email</FieldLabel>
                                         <Input
                                             ref={emailRef}
