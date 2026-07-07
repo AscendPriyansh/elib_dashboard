@@ -42,8 +42,7 @@ export function NavUser({
   }
 }) {
   const { isMobile } = useSidebar()
-
-  const { setToken } = useTokenStore(state => state);
+  const setToken = useTokenStore(state => state.setToken)
 
   const logOutHandler = () => {
     setToken('');

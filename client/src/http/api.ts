@@ -3,7 +3,6 @@ import useTokenStore from "@/store";
 import { config } from "@/config/config";
 
 const api = axios.create({
-    // todo: move this to env variable
     baseURL: config.server_port,
     headers: {
         "Content-Type": "application/json",

@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { useRef } from "react"
-import { Link, useNavigate } from "react-router"
+import { Link } from "react-router"
 import { useMutation } from "@tanstack/react-query"
 import { login } from "@/http/api"
 import { LoaderCircle } from "lucide-react"
@@ -20,7 +20,6 @@ function Login({
     className,
     ...props
 }: React.ComponentProps<"div">) {
-    const navigate = useNavigate();
     const setToken = useTokenStore((state) => state.setToken);
 
     const emailRef = useRef<HTMLInputElement>(null);
@@ -30,7 +29,6 @@ function Login({
     mutationFn: login,
     onSuccess: (response) => {
       setToken(response.data.token);
-      navigate("/dashboard/home");
     },
   })
 
