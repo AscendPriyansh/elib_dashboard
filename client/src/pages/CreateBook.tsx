@@ -1,16 +1,9 @@
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
-// import { getBooks } from "@/http/api";
-// import { useQuery } from "@tanstack/react-query";
-import { CirclePlus } from "lucide-react";
+import { CircleX, SendHorizontal } from "lucide-react";
 import { Link } from "react-router";
 
-function BooksPage() {
-    // const { data, isLoading, isError } = useQuery({
-    //     queryKey: ['book'],
-    //     queryFn: getBooks,
-    // }) 
-
+function CreateBook() {
     return (
         <div className="flex flex-1 flex-col gap-4 p-4">
             <div className="flex justify-between items-center">
@@ -27,11 +20,18 @@ function BooksPage() {
                                 Books
                             </BreadcrumbLink>
                         </BreadcrumbItem>
+                        <BreadcrumbSeparator className="hidden md:block" />
+                        <BreadcrumbItem>
+                            <BreadcrumbPage>Create Book</BreadcrumbPage>
+                        </BreadcrumbItem>
                     </BreadcrumbList>
                 </Breadcrumb>
                 <div className="flex justify-between gap-2">
                     <Link to="/dashboard/books/create">
-                        <Button type="button"><CirclePlus />Add Book</Button>
+                        <Button type="button" variant={"outline"}><CircleX />Cancel</Button>
+                    </Link>
+                    <Link to="/dashboard/books/create">
+                        <Button type="button" variant={"default"}><SendHorizontal />Submit</Button>
                     </Link>
                 </div>
             </div>
@@ -41,4 +41,5 @@ function BooksPage() {
     )
 }
 
-export default BooksPage;
+
+export default CreateBook;
