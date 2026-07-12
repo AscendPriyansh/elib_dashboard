@@ -27,4 +27,10 @@ export const register = async (data: {name: string, email: string; password: str
 
 export const getBooks= async () => {
     return api.get("/api/book");
-}
+};
+
+export const createBook = async (data: FormData) => {
+    return api.post("/api/book", data, {
+        headers: { "Content-Type": undefined },
+    });
+};
