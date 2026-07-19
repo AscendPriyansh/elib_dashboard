@@ -21,16 +21,18 @@ function Login({
     ...props
 }: React.ComponentProps<"div">) {
     const setToken = useTokenStore((state) => state.setToken);
+    const setUser = useTokenStore((state) => state.setUser);
 
     const emailRef = useRef<HTMLInputElement>(null);
     const passwordRef = useRef<HTMLInputElement>(null);
 
     const mutation = useMutation({
-    mutationFn: login,
-    onSuccess: (response) => {
-      setToken(response.data.token);
-    },
-  })
+        mutationFn: login,
+        onSuccess: (response) => {
+            setToken(response.data.token);
+            setUser(response.data.user);
+        },
+    })
 
     const handleLoginSubmit = (e: { preventDefault: () => void }) => {
         e.preventDefault();
@@ -39,13 +41,13 @@ function Login({
         const password = passwordRef.current?.value;
 
         // backend call
-        console.log({email, password});
+        console.log({ email, password });
 
-        if(!email || !password) {
+        if (!email || !password) {
             return alert("Please enter email and password");
         }
 
-        mutation.mutate({email, password});
+        mutation.mutate({ email, password });
     }
 
     return (
@@ -63,7 +65,7 @@ function Login({
                                         </p>
                                     </div>
                                     <Field>
-                                         {mutation.isError && <div className="text-red-700 text-xs">{"Something went wrong"}</div>}
+                                        {mutation.isError && <div className="text-red-700 text-xs">{"Something went wrong"}</div>}
                                         <FieldLabel htmlFor="email">Email</FieldLabel>
                                         <Input
                                             ref={emailRef}
@@ -87,7 +89,7 @@ function Login({
                                     </Field>
                                     <Field>
                                         <Button type="submit" onClick={handleLoginSubmit} disabled={mutation.isPending}>
-                                            {mutation.isPending && <LoaderCircle className="animate-spin"/>}
+                                            {mutation.isPending && <LoaderCircle className="animate-spin" />}
                                             Login
                                         </Button>
                                     </Field>
