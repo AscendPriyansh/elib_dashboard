@@ -34,3 +34,13 @@ export const createBook = async (data: FormData) => {
         headers: { "Content-Type": undefined },
     });
 };
+
+export const getSingleBook = async (bookId: string) => {
+    return api.get(`/api/book/${bookId}`);
+};
+
+export const updateBook = async ({ bookId, data }: { bookId: string; data: FormData }) => {
+    return api.patch(`/api/book/${bookId}`, data, {
+        headers: { "Content-Type": undefined },
+    });
+};

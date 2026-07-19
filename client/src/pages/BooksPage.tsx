@@ -53,11 +53,15 @@ const BooksPage = () => {
                 <Breadcrumb>
                     <BreadcrumbList>
                         <BreadcrumbItem>
-                            <BreadcrumbLink href="/dashboard/home">Home</BreadcrumbLink>
+                            <BreadcrumbLink>
+                                <Link to="/dashboard/home">Home</Link>
+                            </BreadcrumbLink>
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
-                            <BreadcrumbPage>Books</BreadcrumbPage>
+                            <BreadcrumbPage>
+                                <Link to="/dashboard/books">Book</Link>
+                            </BreadcrumbPage>
                         </BreadcrumbItem>
                     </BreadcrumbList>
                 </Breadcrumb>
@@ -72,7 +76,7 @@ const BooksPage = () => {
             {isLoading ? <div className="flex flex-1 flex-col gap-4">
                 <div className="min-h-screen flex-1 rounded-xl bg-muted/50 md:min-h-min flex flex-col justify-center items-center gap-3">
                     <div className="flex flex-col justify-center items-center">
-                        <h3 className="font-bold text-lg text-gray-600">Loading... Please Wait.</h3>
+                        <div className="flex flex-1 items-center justify-center p-4"><LoaderCircle className="animate-spin size-8" /></div>
                     </div>
                 </div>
             </div> :
@@ -94,16 +98,12 @@ const BooksPage = () => {
                         <Table>
                             <TableHeader>
                                 <TableRow>
-                                    <TableHead className="hidden w-25 sm:table-cell">
-                                        <span className="sr-only">Image</span>
-                                    </TableHead>
+                                    <TableHead className="hidden md:table-cell">Images</TableHead>
                                     <TableHead>Title</TableHead>
                                     <TableHead>Genre</TableHead>
                                     <TableHead className="hidden md:table-cell">Author name</TableHead>
                                     <TableHead className="hidden md:table-cell">Created at</TableHead>
-                                    <TableHead>
-                                        <span className="sr-only">Actions</span>
-                                    </TableHead>
+                                    <TableHead className="hidden md:table-cell">Actions</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
@@ -143,7 +143,7 @@ const BooksPage = () => {
                                             </TableCell>
                                             <TableCell className="font-medium">{book.title}</TableCell>
                                             <TableCell>
-                                                <Badge variant={"outline"}>{book.genre}</Badge>
+                                                <Badge variant={"default"}>{book.genre}</Badge>
                                             </TableCell>
                                             <TableCell className="hidden md:table-cell">
                                                 {book.author?.name ?? 'Unknown'}
@@ -164,7 +164,11 @@ const BooksPage = () => {
                                                     </DropdownMenuTrigger>
                                                     <DropdownMenuContent align="end">
                                                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                                        <DropdownMenuItem>Edit</DropdownMenuItem>
+                                                        <DropdownMenuItem>
+                                                            <Link to={`/dashboard/books/${book._id}`}>
+                                                                Edit
+                                                            </Link>
+                                                        </DropdownMenuItem>
                                                         <DropdownMenuItem>Delete</DropdownMenuItem>
                                                     </DropdownMenuContent>
                                                 </DropdownMenu>
