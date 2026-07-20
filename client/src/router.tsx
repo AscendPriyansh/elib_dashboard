@@ -7,6 +7,7 @@ import BooksPage from "@/pages/BooksPage";
 import AuthLayout from "@/layouts/AuthLayout";
 import CreateBook from "./pages/CreateBook";
 import EditBook from "./pages/EditBook";
+import Profile from "./pages/Profile";
 
 const router = createBrowserRouter([
   {
@@ -28,7 +29,7 @@ const router = createBrowserRouter([
       {
         path: "books/:bookId",
         element: <EditBook/>
-      }
+      },
     ]
   },
   {
@@ -42,6 +43,10 @@ const router = createBrowserRouter([
       {
         path: "register",
         element: <Register />
+      },
+      {
+        path: "profile",
+        element: <Profile/>
       }
     ]
   }

@@ -74,4 +74,26 @@ const Login = async (req: Request, res: Response, next: NextFunction) => {
     }
 }
 
-export { Register, Login };
+const Profile = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const userId = (req as any).userId as string | undefined;
+
+        if(!userId) {
+            return next(createHttpError(403, "Unauthorized Access."));
+        }
+
+        const user = await UserModel.findById({_id: userId}).select("-password");
+        if(!user) {
+            return next(createHttpError(404, "User not found."));
+        }
+
+        return res.status(200).json({
+            message: "Profile fetched successfully.",
+            user: user
+        });        
+    } catch(err) {
+        return next(createHttpError(500, "Internal Server Error."));
+    }
+}
+
+export { Register, Login, Profile };

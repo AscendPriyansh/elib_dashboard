@@ -13,3 +13,9 @@ export interface Book {
     file: string;
     createdAt: string;
 }
+
+export interface PaginationProps {
+  currentPage: number;
+  totalPages: number;
+  onPageChange: (page: number) => void;
+}

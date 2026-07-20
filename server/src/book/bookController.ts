@@ -132,11 +132,24 @@ const updateBook = async (req: Request, res: Response, next: NextFunction) => {
 
 const listBook = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const book = await BookModel.find().populate("author", "name");
+        const page = Math.max(1, parseInt(req.query.page as string) || 1);
+        const limit = Math.max(1, Math.min(100, parseInt(req.query.limit as string) || 10));
+        const skip = (page - 1) * limit;
+
+        const [books, totalBooks] = await Promise.all([
+            BookModel.find().skip(skip).limit(limit).populate("author", "name"),
+            BookModel.countDocuments(),
+        ]);
 
         res.status(200).json({
             message: "Fetched successfully",
-            books: book
+            books,
+            pagination: {
+                currentPage: page,
+                totalPages: Math.ceil(totalBooks / limit),
+                totalBooks,
+                limit,
+            },
         });
     } catch (err) {
         return next(createHttpError(500, "Error while getting a book"));

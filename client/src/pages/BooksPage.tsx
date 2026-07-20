@@ -31,21 +31,53 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import { getBooks } from '@/http/api';
+import { getBooks, deleteBook } from '@/http/api';
 import type { Book } from '@/types';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { CirclePlus, LoaderCircle, MoreHorizontal } from 'lucide-react';
 import { Link } from 'react-router';
 import { useState } from 'react';
+import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
+
+const getPageNumbers = (current: number, total: number): (number | '...')[] => {
+    if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
+    const pages: (number | '...')[] = [1];
+    if (current > 3) pages.push('...');
+    const start = Math.max(2, current - 1);
+    const end = Math.min(total - 1, current + 1);
+    for (let i = start; i <= end; i++) pages.push(i);
+    if (current < total - 2) pages.push('...');
+    pages.push(total);
+    return pages;
+};
 
 const BooksPage = () => {
+    const queryClient = useQueryClient();
+    const [currentPage, setCurrentPage] = useState(1);
+    const limit = 10;
+
     const { data, isLoading, isError, error } = useQuery({
-        queryKey: ['books'],
-        queryFn: getBooks,
+        queryKey: ['books', currentPage],
+        queryFn: () => getBooks(currentPage, limit),
         staleTime: 10000,
     });
 
+    const totalPages = data?.data?.pagination?.totalPages ?? 1;
+
+    const deleteMutation = useMutation({
+        mutationFn: deleteBook,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['books'] });
+        },
+    });
+
     const [imgErrors, setImgErrors] = useState<Record<string, boolean>>({});
+
+    const handleDelete = (bookId: string) => {
+        if (confirm('Are you sure you want to delete this book?')) {
+            deleteMutation.mutate(bookId);
+        }
+    };
 
     return (
         <div className="flex flex-1 flex-col gap-4 p-4">
@@ -169,7 +201,7 @@ const BooksPage = () => {
                                                                 Edit
                                                             </Link>
                                                         </DropdownMenuItem>
-                                                        <DropdownMenuItem>Delete</DropdownMenuItem>
+                                                        <DropdownMenuItem onClick={() => handleDelete(book._id)}>Delete</DropdownMenuItem>
                                                     </DropdownMenuContent>
                                                 </DropdownMenu>
                                             </TableCell>
@@ -180,8 +212,50 @@ const BooksPage = () => {
                         </Table>
                     </CardContent>
                     <CardFooter>
-                        <div className="text-xs text-muted-foreground">
-                            Showing <strong>{data?.data?.books?.length ?? 0}</strong> book(s)
+                        <div className="text-xs text-muted-foreground w-full">
+                            <div>
+                                Showing <strong>{data?.data?.books?.length ?? 0}</strong> book(s)
+                                {data?.data?.pagination && (
+                                    <span> — Page <strong>{data.data.pagination.currentPage}</strong> of <strong>{data.data.pagination.totalPages}</strong></span>
+                                )}
+                            </div>
+                            <div className='mt-2'>
+                                <Pagination>
+                                    <PaginationContent>
+                                        <PaginationItem>
+                                            <PaginationPrevious
+                                                href="#"
+                                                onClick={(e) => { e.preventDefault(); setCurrentPage(p => Math.max(1, p - 1)); }}
+                                                className={currentPage <= 1 ? 'pointer-events-none opacity-50' : ''}
+                                            />
+                                        </PaginationItem>
+                                        {getPageNumbers(currentPage, totalPages).map((page, idx) =>
+                                            page === '...' ? (
+                                                <PaginationItem key={`ellipsis-${idx}`}>
+                                                    <PaginationEllipsis />
+                                                </PaginationItem>
+                                            ) : (
+                                                <PaginationItem key={page}>
+                                                    <PaginationLink
+                                                        href="#"
+                                                        isActive={page === currentPage}
+                                                        onClick={(e) => { e.preventDefault(); setCurrentPage(page as number); }}
+                                                    >
+                                                        {page}
+                                                    </PaginationLink>
+                                                </PaginationItem>
+                                            )
+                                        )}
+                                        <PaginationItem>
+                                            <PaginationNext
+                                                href="#"
+                                                onClick={(e) => { e.preventDefault(); setCurrentPage(p => Math.min(totalPages, p + 1)); }}
+                                                className={currentPage >= totalPages ? 'pointer-events-none opacity-50' : ''}
+                                            />
+                                        </PaginationItem>
+                                    </PaginationContent>
+                                </Pagination>
+                            </div>
                         </div>
                     </CardFooter>
                 </Card> : <div className="flex flex-1 flex-col gap-4">

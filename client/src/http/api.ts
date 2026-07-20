@@ -25,8 +25,8 @@ export const register = async (data: {name: string, email: string; password: str
     return api.post("/auth/register", data);
 };
 
-export const getBooks= async () => {
-    return api.get("/api/book");
+export const getBooks = async (page: number = 1, limit: number = 10) => {
+    return api.get("/api/book", { params: { page, limit } });
 };
 
 export const createBook = async (data: FormData) => {
@@ -43,4 +43,8 @@ export const updateBook = async ({ bookId, data }: { bookId: string; data: FormD
     return api.patch(`/api/book/${bookId}`, data, {
         headers: { "Content-Type": undefined },
     });
+};
+
+export const deleteBook = async (bookId: string) => {
+    return api.delete(`/api/book/${bookId}`);
 };
