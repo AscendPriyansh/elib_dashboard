@@ -96,4 +96,5 @@ const Profile = async (req: Request, res: Response, next: NextFunction) => {
     }
 }
 
+
 export { Register, Login, Profile };

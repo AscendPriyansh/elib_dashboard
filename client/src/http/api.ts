@@ -48,3 +48,7 @@ export const updateBook = async ({ bookId, data }: { bookId: string; data: FormD
 export const deleteBook = async (bookId: string) => {
     return api.delete(`/api/book/${bookId}`);
 };
+
+export const getProfile = async () => {
+    return api.get(`/auth/me`);
+};

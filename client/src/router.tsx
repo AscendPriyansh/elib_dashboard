@@ -30,6 +30,10 @@ const router = createBrowserRouter([
         path: "books/:bookId",
         element: <EditBook/>
       },
+      {
+        path: "me",
+        element: <Profile/>
+      }
     ]
   },
   {
@@ -44,10 +48,6 @@ const router = createBrowserRouter([
         path: "register",
         element: <Register />
       },
-      {
-        path: "profile",
-        element: <Profile/>
-      }
     ]
   }
 ]);

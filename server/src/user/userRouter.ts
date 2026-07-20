@@ -8,6 +8,6 @@ userRouter.post("/register", Register);
 userRouter.post("/login", Login);
 
 userRouter.post("/me", authenticate, Profile);
-userRouter.patch("/profile", authenticate, Profile);
+// userRouter.patch("/profile", authenticate, Profile);
 
 export default userRouter;
